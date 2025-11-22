@@ -4,6 +4,7 @@ import { z } from "zod";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/kit/form";
+import { useLogin } from "../model/use-login";
 
 const loginSchema = z.object({
   email: z
@@ -29,12 +30,13 @@ export function LoginForm() {
     },
   });
 
+  const { errorMessage, isPending, login } = useLogin();
+  const onSubmit = form.handleSubmit(login);
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((data) => {
-          console.log("Submitted:", data);
-        })}
+        onSubmit={onSubmit}
         className="flex flex-col gap-4"
       >
         <FormField
@@ -63,7 +65,8 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Войти</Button>
+        {errorMessage && <p className="text-destructive text-sm">{errorMessage}</p>}
+        <Button disabled={isPending} type="submit">Войти</Button>
       </form>
     </Form>
   );

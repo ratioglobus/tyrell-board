@@ -4,6 +4,7 @@ import { z } from "zod";
 import { Input } from "@/shared/ui/kit/input";
 import { Button } from "@/shared/ui/kit/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/ui/kit/form";
+import { useRegister } from "../model/use-register";
 
 const registerSchema = z
     .object({
@@ -45,10 +46,13 @@ export function RegisterForm() {
         reValidateMode: "onChange",
     });
 
+    const { errorMessage, isPending, register } = useRegister();
+    const onSubmit = form.handleSubmit(register);
+
     return (
         <Form {...form}>
             <form
-                onSubmit={form.handleSubmit((data) => console.log("Submitted:", data))}
+                onSubmit={onSubmit}
                 className="flex flex-col gap-4"
             >
                 <FormField
@@ -90,8 +94,8 @@ export function RegisterForm() {
                         </FormItem>
                     )}
                 />
-
-                <Button type="submit">Зарегистрироваться</Button>
+                {errorMessage && <p className="text-destructive text-sm">{errorMessage}</p>}
+                <Button disabled={isPending} type="submit">Зарегистрироваться</Button>
             </form>
         </Form>
     );

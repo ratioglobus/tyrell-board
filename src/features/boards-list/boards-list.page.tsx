@@ -8,11 +8,16 @@ import { Button } from "@/shared/ui/kit/button";
 function BoardsListPage() {
   const queryClient = useQueryClient();
   const boardsQuery = rqClient.useQuery('get', '/boards');
+
+  const { data } = rqClient.useQuery('post', '/auth/refresh');
+  console.log(data);
+
   const createBoardMutation = rqClient.useMutation('post', '/boards', {
     onSettled: async () => {
       await queryClient.invalidateQueries(rqClient.queryOptions('get', '/boards'));
     }
   });
+
   const deleteBoardMutation = rqClient.useMutation('delete', '/boards/{boardId}', {
     onSettled: async () => {
       await queryClient.invalidateQueries(rqClient.queryOptions('get', '/boards'));
