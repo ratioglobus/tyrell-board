@@ -17,8 +17,8 @@ export const publicFetchClient = createFetchClient<ApiPaths>({
 export const publicRqClient = createClient(publicFetchClient);
 
 fetchClient.use({
-  onRequest({ request }) {
-    const token = useSession.getState().token;
+  async onRequest({ request }) {
+    const token = await useSession.getState().refreshToken();
     if(token) {
       request.headers.set("Authorization", `Baerer ${token}`)
     } else {
