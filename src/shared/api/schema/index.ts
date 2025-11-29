@@ -1,3 +1,4 @@
+
 import { paths, components } from "./generated";
 
 export type ApiPaths = paths;

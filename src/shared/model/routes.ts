@@ -1,4 +1,4 @@
-import "react-router";
+import "react-router-dom";
 
 export const ROUTES = {
   HOME: "/",
@@ -6,12 +6,14 @@ export const ROUTES = {
   REGISTER: "/register",
   BOARDS: "/boards",
   BOARD: "/boards/:boardId",
+  FAVORITE_BOARDS: "/boards/favorite",
+  RECENT_BOARDS: "/boards/recent",
 } as const;
 
 export type PathParams = {
   [ROUTES.BOARD]: {
     boardId: string;
-  }
+  };
 };
 
 declare module "react-router-dom" {

@@ -1,9 +1,12 @@
 import { ApiSchemas } from "../../schema";
 import { http } from "../http";
-import { HttpResponse } from "msw";
-import { createRefreshTokenCookie, generateTokens, verifyToken } from "../session";
+import { delay, HttpResponse } from "msw";
+import {
+  createRefreshTokenCookie,
+  generateTokens,
+  verifyToken,
+} from "../session";
 
-const userPasswords = new Map<string, string>();
 const mockUsers: ApiSchemas["User"][] = [
   {
     id: "1",
@@ -11,6 +14,7 @@ const mockUsers: ApiSchemas["User"][] = [
   },
 ];
 
+const userPasswords = new Map<string, string>();
 userPasswords.set("admin@gmail.com", "123456");
 
 export const authHandlers = [
@@ -19,6 +23,8 @@ export const authHandlers = [
 
     const user = mockUsers.find((u) => u.email === body.email);
     const storedPassword = userPasswords.get(body.email);
+
+    await delay();
 
     if (!user || !storedPassword || storedPassword !== body.password) {
       return HttpResponse.json(
@@ -37,7 +43,7 @@ export const authHandlers = [
 
     return HttpResponse.json(
       {
-        accessToken,
+        accessToken: accessToken,
         user,
       },
       {
@@ -51,6 +57,8 @@ export const authHandlers = [
 
   http.post("/auth/register", async ({ request }) => {
     const body = await request.json();
+
+    await delay();
 
     if (mockUsers.some((u) => u.email === body.email)) {
       return HttpResponse.json(
@@ -88,7 +96,6 @@ export const authHandlers = [
       },
     );
   }),
-
   http.post("/auth/refresh", async ({ cookies }) => {
     const refreshToken = cookies.refreshToken;
 
